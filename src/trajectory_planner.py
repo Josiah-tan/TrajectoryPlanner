@@ -1,4 +1,5 @@
 import rospy
+import numpy as np
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 from nav_msgs.msg import OccupancyGrid, Path
 from visualization_msgs.msg import MarkerArray, Marker
@@ -10,6 +11,7 @@ from move import Move
 from state import State
 from robot import Robot
 from map import Map
+import matplotlib.pyplot as plt
 
 class TrajectoryPlanner:
     def __init__(self):
@@ -21,7 +23,7 @@ class TrajectoryPlanner:
                       Move(-0.1, 0),  # back
                       Move(0, 1.5708),  # turn left 90
                       Move(0, -1.5708)] # turn right 90
-        self.robot = Robot(0.5, 0.5)
+        self.robot = Robot(0.1, 0.1)
         self.is_working = False # Replace with mutex after all
 
         self.map_subscriber = rospy.Subscriber("/projected_map", OccupancyGrid, self.new_map_callback)
@@ -86,6 +88,10 @@ class TrajectoryPlanner:
             rospy.loginfo("Restoring path from final state...")
             path = self.restore_path(final_state)
             self.path_publisher.publish(path)
+            map_array = np.array(self.map.map.data).reshape((self.map.height, self.map.width))
+            # Plot the occupancy map
+            plt.imshow(map_array, cmap='gray')
+            plt.show(block=False)
             rospy.loginfo("Planning was finished...")
 
     def restore_path(self, final_state):
