@@ -32,7 +32,7 @@ def replan(map, moves, robot, start, goal, pub):
                     better_in_closed = any(other_successor.is_same_as(successor) and other_successor.f <= successor.f for other_successor in closed)
                     if not better_in_closed:
                         heapq.heappush(opened, (successor.f, successor))
-
+                        
         closed.append(q)
-    pub_marker.publish(all_visited)
+    # pub_marker.publish(all_visited)
     return final_state

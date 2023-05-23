@@ -67,6 +67,7 @@ class State:
             model_state.y += move.dy * step
 
             if not _map.is_allowed(model_state, robot):
+                print("returns none")
                 return None
         return goal
 
