@@ -19,14 +19,14 @@ class TrajectoryPlanner:
         self.start = None
         self.goal = None
 
-        self.moves = [Move(0.1, 0),  # forward
-                      Move(-0.1, 0),  # back
+        self.moves = [Move(0.05, 0),  # forward
+                      Move(-0.05, 0),  # back
                       Move(0, 1.5708),  # turn left 90
                       Move(0, -1.5708)] # turn right 90
-        self.robot = Robot(0.1, 0.1)
+        self.robot = Robot(0.05, 0.05)
         self.is_working = False # Replace with mutex after all
 
-        self.map_subscriber = rospy.Subscriber("/projected_map", OccupancyGrid, self.new_map_callback)
+        self.map_subscriber = rospy.Subscriber("/cleared_map", OccupancyGrid, self.new_map_callback)
         self.start_subscriber = rospy.Subscriber("initialpose", PoseWithCovarianceStamped, self.new_start_callback)
         # self.goal_subscriber = rospy.Subscriber("goal", PoseStamped, self.new_goal_callback)
         # self.start_subscriber = rospy.Subscriber("/clicked_point", PoseWithCovarianceStamped, self.new_start_callback)
@@ -90,8 +90,8 @@ class TrajectoryPlanner:
             self.path_publisher.publish(path)
             map_array = np.array(self.map.map.data).reshape((self.map.height, self.map.width))
             # Plot the occupancy map
-            plt.imshow(map_array, cmap='gray')
-            plt.show(block=False)
+            # plt.imshow(map_array, cmap='gray')
+            # plt.show(block=False)
             rospy.loginfo("Planning was finished...")
 
     def restore_path(self, final_state):

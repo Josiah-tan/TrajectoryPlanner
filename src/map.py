@@ -34,7 +34,7 @@ class Map:
     def is_allowed(self, state, robot):
         was_error = False
         i, j = self.coord_to_indices(state.x, state.y)
-        side = int(math.floor((max(robot.width, robot.height) / self.resolution) / 2))
+        side = max(int(math.floor((max(robot.width, robot.height) / self.resolution) / 2)), 1)
         try:
             for s_i in range(i-side, i+side):
                 for s_j in range(j-side, j+side):
