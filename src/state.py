@@ -40,8 +40,10 @@ class State:
 
     def apply(self, move):
         new_theta = self.theta + move.dtheta
-        new_x = self.x + math.cos(new_theta) * move.length
-        new_y = self.y + math.sin(new_theta) * move.length
+        # new_x = self.x + math.cos(new_theta) * move.length
+        # new_y = self.y + math.sin(new_theta) * move.length
+        new_x += move.dx
+        new_y += move.dy
         return State(new_x, new_y, new_theta)
 
     def try_apply(self, _map, move, robot):
@@ -59,8 +61,10 @@ class State:
             model_state.theta += move.dtheta * step
 
             # Go in this direction
-            model_state.x += math.cos(model_state.theta) * move.length * step
-            model_state.y += math.sin(model_state.theta) * move.length * step
+            # model_state.x += math.cos(model_state.theta) * move.length * step
+            # model_state.y += math.sin(model_state.theta) * move.length * step
+            model_state.x += move.dx * step
+            model_state.y += move.dy * step
 
             if not _map.is_allowed(model_state, robot):
                 return None

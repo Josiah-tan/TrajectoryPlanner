@@ -19,10 +19,10 @@ class TrajectoryPlanner:
         self.start = None
         self.goal = None
 
-        self.moves = [Move(0.05, 0),  # forward
-                      Move(-0.05, 0),  # back
-                      Move(0, 1.5708),  # turn left 90
-                      Move(0, -1.5708)] # turn right 90
+        self.moves = [Move(0.05, 0, 0),  # forward
+                      Move(-0.05, 0, 0),  # back
+                      Move(0, 0.05, 0),  # right
+                      Move(0, -0.05, 0)] # left
         self.robot = Robot(0.05, 0.05)
         self.is_working = False # Replace with mutex after all
 
