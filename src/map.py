@@ -1,3 +1,4 @@
+from visualization_msgs.msg import MarkerArray
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Point
 import rospy
@@ -13,6 +14,10 @@ class Map:
         self.origin = Point()
         self.origin.x = grid_map.info.origin.position.x
         self.origin.y = grid_map.info.origin.position.y
+        self.marker_publisher = rospy.Publisher("is_allowed_marker", MarkerArray, queue_size=1)
+        self.markers = MarkerArray()
+        self.marker_id = 0
+        
 
     def get_by_index(self, i, j):
         if not self.are_indices_in_range(i, j):
@@ -44,14 +49,26 @@ class Map:
         side = max(robot.width, robot.height)
         max_i, max_j = self.coord_to_indices(state.x + side / 2, state.y + side / 2)
         min_i, min_j = self.coord_to_indices(state.x - side / 2, state.y - side / 2)
+        marker = state.to_marker(robot)
+        marker.id = self.marker_id
         try:
             for s_i in range(min_i, max_i + 1):
                 for s_j in range(min_j, max_j + 1):
                     cell = self.get_by_index(s_i, s_j)
                     if cell == 100 or cell == -1:
+                        marker.color.r = 0
+                        marker.color.g = 0
+                        marker.color.b = 1
+                        self.markers.append(marker)
+                        self.marker_id += 1
                         return False
         except IndexError as e:
             # rospy.loginfo("Indices are out of range")
+            marker.color.r = 0
+            marker.color.g = 1
+            marker.color.b = 0
+            self.markers.append(marker)
+            self.marker_id += 1
             was_error = True
         return True and not was_error
 
