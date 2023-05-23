@@ -34,6 +34,7 @@ class TrajectoryPlanner:
 
         self.path_publisher = rospy.Publisher("trajectory", MarkerArray, queue_size=1)
         self.pose_publisher = rospy.Publisher("debug_pose", PoseStamped, queue_size=1)
+        self.marker_publisher = rospy.Publisher("debug_marker", MarkerArray, queue_size=1)
 
         # what will be there. A module goes into variable. Isn't it too much memory consumption. Maybe I should assign function replan() to this variable?
         self.planner = planners.astar.replan
@@ -79,7 +80,7 @@ class TrajectoryPlanner:
 
     def replan(self):
         rospy.loginfo("Planning was started")
-        final_state = self.planner(self.map, self.moves, self.robot, self.start, self.goal, self.pose_publisher)
+        final_state = self.planner(self.map, self.moves, self.robot, self.start, self.goal, self.pose_publisher, self.marker_publisher)
 
         if final_state is None:
             rospy.loginfo("No path found")

@@ -1,20 +1,30 @@
 import heapq
+from visualization_msgs.msg import MarkerArray, Marker
 
 # In future we can create field planner, which will contain object of algorhytm
 # A* algorhytm based on http://web.mit.edu/eranki/www/tutorials/search/
-def replan(map, moves, robot, start, goal, pub):
+def replan(map, moves, robot, start, goal, pub, pub_marker):
     robot_dimension = min(robot.width, robot.height)
 
     final_state = None
     opened = []
     heapq.heappush(opened, (0.0, start))
     closed = []
+    all_visited = MarkerArray()
+    pose_id = 0
 
     while opened and final_state is None:
         q = heapq.heappop(opened)[1]
         for move in moves:
             successor = q.try_apply(map, move, robot)
             pub.publish(q.to_pose_stamped())
+            pose_marker = q.to_marker(robot)
+            pose_marker.id = pose_id
+            pose_marker.color.r = 0
+            pose_marker.color.g = 1
+            pose_marker.color.b = 0
+            all_visited.markers.append(pose_marker)
+            pose_id += 1
             if successor is not None:
                 if successor.dist_to(goal) < robot_dimension:
                     final_state = successor
@@ -32,5 +42,5 @@ def replan(map, moves, robot, start, goal, pub):
                         heapq.heappush(opened, (successor.f, successor))
 
         closed.append(q)
-
+    pub_marker.publish(all_visited)
     return final_state
