@@ -1,4 +1,3 @@
-#!/usr/bin/python2.7
 import rospy
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 from nav_msgs.msg import OccupancyGrid, Path
@@ -25,9 +24,11 @@ class TrajectoryPlanner:
         self.robot = Robot(0.5, 0.5)
         self.is_working = False # Replace with mutex after all
 
-        self.map_subscriber = rospy.Subscriber("map", OccupancyGrid, self.new_map_callback)
+        self.map_subscriber = rospy.Subscriber("/projected_map", OccupancyGrid, self.new_map_callback)
         self.start_subscriber = rospy.Subscriber("initialpose", PoseWithCovarianceStamped, self.new_start_callback)
-        self.goal_subscriber = rospy.Subscriber("goal", PoseStamped, self.new_goal_callback)
+        # self.goal_subscriber = rospy.Subscriber("goal", PoseStamped, self.new_goal_callback)
+        # self.start_subscriber = rospy.Subscriber("/clicked_point", PoseWithCovarianceStamped, self.new_start_callback)
+        self.goal_subscriber = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.new_goal_callback)
 
         self.path_publisher = rospy.Publisher("trajectory", MarkerArray, queue_size=1)
         self.pose_publisher = rospy.Publisher("debug_pose", PoseStamped, queue_size=1)

@@ -1,5 +1,4 @@
 from nav_msgs.msg import OccupancyGrid
-from exceptions import IndexError
 from geometry_msgs.msg import Point
 import rospy
 import math

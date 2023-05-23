@@ -69,7 +69,7 @@ class State:
     def to_pose_stamped(self):
         pose = PoseStamped()
         pose.header.stamp = rospy.Time.now()
-        pose.header.frame_id = "map"
+        pose.header.frame_id = "world"
         pose.pose.position.x = self.x
         pose.pose.position.y = self.y
         pose.pose.position.z = 0.25
@@ -86,7 +86,7 @@ class State:
 
     def to_marker(self, robot):
         marker = Marker()
-        marker.header.frame_id = "map"
+        marker.header.frame_id = "world"
         marker.header.stamp = rospy.Time.now()
         marker.pose.position.x = self.x
         marker.pose.position.y = self.y
