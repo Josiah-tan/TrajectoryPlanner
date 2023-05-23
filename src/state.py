@@ -42,8 +42,8 @@ class State:
         new_theta = self.theta + move.dtheta
         # new_x = self.x + math.cos(new_theta) * move.length
         # new_y = self.y + math.sin(new_theta) * move.length
-        new_x += move.dx
-        new_y += move.dy
+        new_x = self.x + move.dx
+        new_y = self.y + move.dy
         return State(new_x, new_y, new_theta)
 
     def try_apply(self, _map, move, robot):
