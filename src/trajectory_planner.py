@@ -67,8 +67,8 @@ class TrajectoryPlanner:
             if self.map is not None and self.map.is_allowed(new_start, self.robot):
                 self.start = new_start
                 rospy.loginfo("New start was set")
-                if self.ready_to_plan():
-                    self.replan()
+                # if self.ready_to_plan():
+                    # self.replan()
             else:
                 rospy.logwarn("New start is bad or no map available")
             self.is_working = False
