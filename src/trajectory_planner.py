@@ -78,8 +78,8 @@ class TrajectoryPlanner:
             self.is_working = True
             self.map = Map(grid_map, self.marker_pub)
             rospy.loginfo("New map was set")
-            if self.ready_to_plan():
-                self.replan()
+            # if self.ready_to_plan():
+            #     self.replan()
             self.is_working = False
 
     def replan(self):
