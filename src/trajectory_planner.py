@@ -30,10 +30,15 @@ class TrajectoryPlanner:
         self.robot = Robot(0.05, 0.05)
         self.is_working = False # Replace with mutex after all
 
-        self.map_subscriber = rospy.Subscriber("/cleared_map", OccupancyGrid, self.new_map_callback)
-        self.start_subscriber = rospy.Subscriber("/camera_pose", PoseStamped, self.new_start_callback)
-        # self.goal_subscriber = rospy.Subscriber("goal", PoseStamped, self.new_goal_callback)
-        # self.start_subscriber = rospy.Subscriber("/clicked_point", PoseWithCovarianceStamped, self.new_start_callback)
+		self.new_map_callback(
+           rospy.wait_for_message('/cleared_map', OccupancyGrid, timeout=None)
+        )
+		self.new_start_callback(
+           rospy.wait_for_message('/camera_pose', PoseStamped, timeout=None)
+        )
+        
+        # self.map_subscriber = rospy.Subscriber("/cleared_map", OccupancyGrid, self.new_map_callback)
+        # self.start_subscriber = rospy.Subscriber("/camera_pose", PoseStamped, self.new_start_callback)
         self.goal_subscriber = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.new_goal_callback)
 
         self.path_publisher = rospy.Publisher("trajectory", MarkerArray, queue_size=1)
