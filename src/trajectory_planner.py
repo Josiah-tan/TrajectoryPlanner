@@ -22,7 +22,11 @@ class TrajectoryPlanner:
         self.moves = [Move(0.05, 0, 0),  # forward
                       Move(-0.05, 0, 0),  # back
                       Move(0, 0.05, 0),  # right
-                      Move(0, -0.05, 0)] # left
+                      Move(0, -0.05, 0),# left
+                      Move(-0.05, -0.05, 0),
+                      Move(0.05, 0.05, 0),
+                      Move(-0.05, 0.05, 0),
+                      Move(0.05, -0.05, 0)] 
         self.robot = Robot(0.05, 0.05)
         self.is_working = False # Replace with mutex after all
 
