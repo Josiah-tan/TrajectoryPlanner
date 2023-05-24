@@ -31,7 +31,7 @@ class TrajectoryPlanner:
         self.is_working = False # Replace with mutex after all
 
         self.map_subscriber = rospy.Subscriber("/cleared_map", OccupancyGrid, self.new_map_callback)
-        self.start_subscriber = rospy.Subscriber("initialpose", PoseWithCovarianceStamped, self.new_start_callback)
+        self.start_subscriber = rospy.Subscriber("/camera_pose", PoseStamped, self.new_start_callback)
         # self.goal_subscriber = rospy.Subscriber("goal", PoseStamped, self.new_goal_callback)
         # self.start_subscriber = rospy.Subscriber("/clicked_point", PoseWithCovarianceStamped, self.new_start_callback)
         self.goal_subscriber = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.new_goal_callback)
@@ -63,7 +63,7 @@ class TrajectoryPlanner:
     def new_start_callback(self, start_pose):
         if not self.is_working:
             self.is_working = True
-            new_start = State.from_pose(start_pose.pose.pose)
+            new_start = State.from_pose(start_pose.pose)
             if self.map is not None and self.map.is_allowed(new_start, self.robot):
                 self.start = new_start
                 rospy.loginfo("New start was set")
