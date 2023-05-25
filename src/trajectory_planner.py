@@ -33,12 +33,12 @@ class TrajectoryPlanner:
         self.pose_publisher = rospy.Publisher("debug_pose", PoseStamped, queue_size=1)
         self.marker_pub = rospy.Publisher("is_allowed_marker", MarkerArray, queue_size=1)
 
-        self.new_map_callback(
-            rospy.wait_for_message('/cleared_map', OccupancyGrid, timeout=None)
-        )
-        self.new_start_callback(
-            rospy.wait_for_message('/orb_slam3/camera_pose_scaled', PoseStamped, timeout=None)
-        )
+        # self.new_map_callback(
+        #     rospy.wait_for_message('/cleared_map', OccupancyGrid, timeout=None)
+        # )
+        # self.new_start_callback(
+        #     rospy.wait_for_message('/orb_slam3/camera_pose_scaled', PoseStamped, timeout=None)
+        # )
         
         # self.map_subscriber = rospy.Subscriber("/cleared_map", OccupancyGrid, self.new_map_callback)
         # self.start_subscriber = rospy.Subscriber("/camera_pose", PoseStamped, self.new_start_callback)
@@ -52,6 +52,13 @@ class TrajectoryPlanner:
         return self.map is not None and self.start is not None and self.goal is not None
 
     def new_goal_callback(self, goal_pose):
+        self.new_map_callback(
+            rospy.wait_for_message('/cleared_map', OccupancyGrid, timeout=None)
+        )
+        self.new_start_callback(
+            rospy.wait_for_message('/orb_slam3/camera_pose_scaled', PoseStamped, timeout=None)
+        )
+        
         if not self.is_working:
             self.is_working = True
             new_goal = State.from_pose(goal_pose.pose)
