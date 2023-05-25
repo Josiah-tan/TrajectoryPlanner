@@ -27,24 +27,24 @@ class TrajectoryPlanner:
                       Move(0.05, 0.05, 0),
                       Move(-0.05, 0.05, 0),
                       Move(0.05, -0.05, 0)] 
-        self.robot = Robot(0.05, 0.05)
+        self.robot = Robot(0.15, 0.15)
         self.is_working = False # Replace with mutex after all
+        self.path_publisher = rospy.Publisher("trajectory", MarkerArray, queue_size=1)
+        self.pose_publisher = rospy.Publisher("debug_pose", PoseStamped, queue_size=1)
+        self.marker_pub = rospy.Publisher("is_allowed_marker", MarkerArray, queue_size=1)
 
-		self.new_map_callback(
-           rospy.wait_for_message('/cleared_map', OccupancyGrid, timeout=None)
+        self.new_map_callback(
+            rospy.wait_for_message('/cleared_map', OccupancyGrid, timeout=None)
         )
-		self.new_start_callback(
-           rospy.wait_for_message('/camera_pose', PoseStamped, timeout=None)
+        self.new_start_callback(
+            rospy.wait_for_message('/orb_slam3/camera_pose_scaled', PoseStamped, timeout=None)
         )
         
         # self.map_subscriber = rospy.Subscriber("/cleared_map", OccupancyGrid, self.new_map_callback)
         # self.start_subscriber = rospy.Subscriber("/camera_pose", PoseStamped, self.new_start_callback)
         self.goal_subscriber = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.new_goal_callback)
 
-        self.path_publisher = rospy.Publisher("trajectory", MarkerArray, queue_size=1)
-        self.pose_publisher = rospy.Publisher("debug_pose", PoseStamped, queue_size=1)
-        self.marker_pub = rospy.Publisher("is_allowed_marker", MarkerArray, queue_size=1)
-
+        
         # what will be there. A module goes into variable. Isn't it too much memory consumption. Maybe I should assign function replan() to this variable?
         self.planner = planners.astar.replan
 
@@ -97,6 +97,7 @@ class TrajectoryPlanner:
             # Restore and publish path
             rospy.loginfo("Restoring path from final state...")
             path = self.restore_path(final_state)
+            path.markers = list(reversed(path.markers))
             self.path_publisher.publish(path)
             map_array = np.array(self.map.map.data).reshape((self.map.height, self.map.width))
             # Plot the occupancy map
